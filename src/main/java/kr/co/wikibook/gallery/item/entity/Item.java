@@ -42,7 +42,7 @@ public class Item {
                 .name(name)
                 .imgPath(imgPath)
                 .price(price)
-                .discounterPer(discountPer)
+                .discountPer(discountPer)
                 .build();
     }
 }

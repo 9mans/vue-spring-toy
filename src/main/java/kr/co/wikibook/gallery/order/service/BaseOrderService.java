@@ -59,7 +59,7 @@ public class BaseOrderService implements OrderService {
         long amount = 0;
 
         for (ItemRead item : items) {
-            amount += item.getPrice() - item.getPrice().longValue() * item.getDiscounterPer() / 100;
+            amount += item.getPrice() - item.getPrice().longValue() * item.getDiscountPer() / 100;
         }
 
         orderReq.setAmount(amount);

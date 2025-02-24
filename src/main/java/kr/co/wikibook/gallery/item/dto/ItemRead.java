@@ -11,5 +11,5 @@ public class ItemRead {
     private String name;
     private String imgPath;
     private Integer price;
-    private Integer discounterPer;
+    private Integer discountPer;
 }
