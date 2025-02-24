@@ -42,8 +42,8 @@ public class Order {
 
     }
 
-    public Order(Integer id, String name, String address, String payment, String cardNumber, Long amount) {
-        this.id = id;
+    public Order(Integer memberId, String name, String address, String payment, String cardNumber, Long amount) {
+        this.memberId = memberId;
         this.name = name;
         this.address = address;
         this.payment = payment;

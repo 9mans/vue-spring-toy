@@ -1,6 +1,7 @@
 package kr.co.wikibook.gallery.order.service;
 
 import kr.co.wikibook.gallery.order.entity.OrderItem;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
