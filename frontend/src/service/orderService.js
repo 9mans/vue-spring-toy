@@ -1,13 +1,12 @@
-import axios from "axios";
-
+import httpRequester from "@/libs/httpRequester.js";
 export const addOrder = (args) => {
-    return axios.post("/v1/api/orders", args).catch(e => e.response);
+    return httpRequester.post("/v1/api/orders", args).catch(e => e.response);
 };
 
 export const getOrders = (args) => {
-    return axios.get("/v1/api/orders", args).catch(e => e.response);
+    return httpRequester.get("/v1/api/orders", args).catch(e => e.response);
 };
 
 export const getOrder = (id) => {
-    return axios.get(`/v1/api/orders/${id}`).catch(e => e.response);
+    return httpRequester.get(`/v1/api/orders/${id}`).catch(e => e.response);
 };
