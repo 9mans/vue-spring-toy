@@ -3,6 +3,7 @@
 import {reactive} from "vue";
 import {useRouter} from "vue-router";
 import {login} from "@/service/accountService.js";
+import {useAccountStore} from "@/stores/account.js";
 
 const state = reactive({
 
@@ -12,6 +13,7 @@ const state = reactive({
   }
 });
 
+const accountStore = useAccountStore();
 const router = useRouter();
 
 const submit = async () => {
@@ -19,6 +21,7 @@ const submit = async () => {
 
   switch (res.status) {
     case 200:
+      accountStore.setAccessToken(res.data);
       await router.push("/");
       break;
 

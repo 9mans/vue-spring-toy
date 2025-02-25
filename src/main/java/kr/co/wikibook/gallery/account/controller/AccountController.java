@@ -4,12 +4,18 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import kr.co.wikibook.gallery.account.dto.AccountJoinRequest;
 import kr.co.wikibook.gallery.account.dto.AccountLoginRequest;
+import kr.co.wikibook.gallery.account.etc.AccountConstants;
 import kr.co.wikibook.gallery.account.helper.AccountHelper;
+import kr.co.wikibook.gallery.block.service.BlockService;
+import kr.co.wikibook.gallery.common.util.HttpUtils;
+import kr.co.wikibook.gallery.common.util.TokenUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
@@ -17,6 +23,7 @@ import org.springframework.web.bind.annotation.*;
 public class AccountController {
 
     private final AccountHelper accountHelper;
+    private final BlockService blockService;
 
     @PostMapping("/api/account/join")
     public ResponseEntity<?> join(@RequestBody AccountJoinRequest joinReq) {
@@ -54,5 +61,21 @@ public class AccountController {
     public ResponseEntity<?> logout(HttpServletRequest req, HttpServletResponse res) {
         accountHelper.logout(req, res);
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @GetMapping("/api/account/token")
+    public ResponseEntity<?> regenerate(HttpServletRequest request) {
+        String accessToken = "";
+        String refreshToken = HttpUtils.getCookieValue(request, AccountConstants.REFRESH_TOKEN_NAME);
+
+        if (StringUtils.hasLength(refreshToken) && TokenUtils.isValid(refreshToken) && !blockService.has(refreshToken)) {
+            Map<String, Object> tokenBody = TokenUtils.getBody(refreshToken);
+
+            Integer memberId = (Integer) tokenBody.get(AccountConstants.MEMBER_ID_NAME);
+
+            accessToken = TokenUtils.generate(AccountConstants.ACCESS_TOKEN_NAME, AccountConstants.MEMBER_ID_NAME, memberId, AccountConstants.ACCESS_TOKEN_EXP_MINUTES);
+        }
+
+        return new ResponseEntity<>(accessToken, HttpStatus.OK);
     }
 }
