@@ -1,4 +1,5 @@
 import {createRouter, createWebHistory} from "vue-router";
+import OrderDetail from "@/views/OrderDetail.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -32,6 +33,18 @@ const router = createRouter({
       name: 'order',
       component: () => import('../views/OrderForm.vue')
     },
+
+    {
+      path: '/orders',
+      name: 'orders',
+      component: () => import('../views/Orders.vue')
+    },
+
+    {
+      path: '/orders/:id',
+      name: OrderDetail,
+      component: () => import('../views/OrderDetail.vue')
+    }
   ]
 });
 
