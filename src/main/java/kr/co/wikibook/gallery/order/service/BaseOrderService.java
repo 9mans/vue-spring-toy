@@ -1,6 +1,7 @@
 package kr.co.wikibook.gallery.order.service;
 
 import kr.co.wikibook.gallery.cart.service.CartService;
+import kr.co.wikibook.gallery.common.util.EncryptionUtils;
 import kr.co.wikibook.gallery.item.dto.ItemRead;
 import kr.co.wikibook.gallery.item.service.ItemService;
 import kr.co.wikibook.gallery.order.dto.OrderRead;
@@ -63,6 +64,10 @@ public class BaseOrderService implements OrderService {
         }
 
         orderReq.setAmount(amount);
+
+        if ("card".equals(orderReq.getPayment())) {
+            orderReq.setCardNumber(EncryptionUtils.encrypt(orderReq.getCardNumber()));
+        }
 
         Order order = orderRepository.save(orderReq.toEntity(memberId));
 
