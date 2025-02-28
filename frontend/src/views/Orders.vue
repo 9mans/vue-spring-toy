@@ -4,15 +4,36 @@ import {reactive} from "vue";
 import {getOrders} from "@/service/orderService.js";
 
 const state = reactive({
+
+  args: {
+    page: 0,
+    size: 5
+  },
+
+  page: {
+    index: 0,
+    totalPages: 0,
+    totalElements: 0,
+  },
   orders: []
 });
 
-const load = async () => {
-  const res = await getOrders();
+const getListNum = (idx) => {
+  return state.page.totalElements - idx - state.args.size * state.page.index;
+};
+
+const load = async (pageIdx) => {
+  if (pageIdx !== undefined) {
+    state.args.page = pageIdx;
+  }
+
+  const res = await getOrders(state.args);
 
   if (res.status === 200) {
-    state.orders = res.data;
-    console.log(res.data);
+    state.orders = res.data.content;
+    state.page.index = res.data.number;
+    state.page.totalPages = res.data.totalPages;
+    state.page.totalElements = res.data.totalElements;
   }
 };
 
@@ -37,15 +58,24 @@ const load = async () => {
         </thead>
         <tbody>
         <tr v-for="(o, idx) in state.orders">
-          <td class="text-center">{{ state.orders.length - idx }}</td>
+          <td class="text-center">{{ getListNum(idx) }}</td>
           <td>{{ o.name }}</td>
           <td>{{ o.payment === 'card' ? '카드' : '무통장입금' }}</td>
           <td>{{ o.amount.toLocaleString() }}원</td>
           <td>{{ o.created.toLocaleString() }}</td>
-          <td> <router-link :to="`/orders/${o.id}`">자세히보기</router-link> </td>
+          <td>
+            <router-link :to="`/orders/${o.id}`">자세히보기</router-link>
+          </td>
         </tr>
         </tbody>
       </table>
+      <div class="pagination d-flex justify-content-center pt-2">
+        <div class="btn-group" role="group">
+          <button class="btn py-2 px-3" :class="[state.page.index === idx ? 'btn-primary' : 'btn-outline-secondary']"
+                  v-for="(i, idx) in state.page.totalPages" @click="load(idx)">{{ i }}
+          </button>
+        </div>
+      </div>
     </div>
   </div>
 </template>
